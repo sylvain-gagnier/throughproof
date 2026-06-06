@@ -1,0 +1,28 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install tooling
+        run: pip install -r tools/requirements.txt
+      - name: Unit tests (validator, detector, coverage, eval scorer)
+        run: pytest
+      - name: Validate framework packs (no unknown keys, no silent gaps)
+        run: python tools/validate_packs.py
+      - name: Coverage matrix is fresh
+        run: python tools/gen_coverage.py --check
+      - name: Eval gate — compliant code must score (golden replay)
+        run: >-
+          python tools/run_evals.py
+          --replay tools/evals/golden-skill-on.json
+          --min-f1 0.99 --min-hygiene 0.99

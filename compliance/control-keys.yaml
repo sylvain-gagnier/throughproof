@@ -1,0 +1,56 @@
+# Throughproof control-key taxonomy — the single source of truth for what a piece
+# of code can declare it satisfies. Framework packs (compliance/frameworks/*.yaml)
+# map every one of these keys to a specific framework's control id.
+#
+# evidence_type:
+#   runtime_marker  - the agent emits `control: "<key>"` in a structured event at runtime
+#   static          - a code property the verifier detects statically (e.g. TLS enforced)
+#   static_negative - an absence the verifier checks for (e.g. no secret in a log line)
+version: 1
+
+keys:
+  - key: log.audit
+    domain: logging
+    evidence_type: runtime_marker
+    description: Canonical audit event emitted on a sensitive action, on success and failure.
+
+  - key: log.monitor
+    domain: logging
+    evidence_type: runtime_marker
+    description: Security-relevant monitoring/alerting event that feeds anomaly detection.
+
+  - key: hygiene.no-secrets
+    domain: logging
+    evidence_type: static_negative
+    description: Logs must never contain secrets, tokens, credentials, or PII values.
+
+  - key: access.authz
+    domain: access
+    evidence_type: runtime_marker
+    description: Authorization decision (allow/deny) on access to a restricted resource.
+
+  - key: access.privileged
+    domain: access
+    evidence_type: runtime_marker
+    description: Exercise of a privileged or administrative capability.
+
+  - key: access.authn
+    domain: access
+    evidence_type: static
+    description: Secure authentication — hashed credentials, MFA, safe session handling.
+
+  - key: crypto.in-transit
+    domain: crypto
+    evidence_type: static
+    description: Sensitive data is encrypted in transit (TLS enforced, no plaintext channels).
+
+  - key: crypto.at-rest
+    domain: crypto
+    evidence_type: static
+    description: Sensitive data is encrypted at rest.
+
+# Legacy literals previously emitted by SOC 2-only adopters. The verifier treats
+# these as aliases of the neutral keys so already-shipped events still map.
+aliases:
+  CC7.2: log.audit
+  CC6.x: hygiene.no-secrets

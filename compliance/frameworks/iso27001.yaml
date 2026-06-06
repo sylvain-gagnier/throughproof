@@ -1,0 +1,28 @@
+framework: iso27001
+framework_version: "2022"
+source: "ISO/IEC 27001:2022 Annex A"
+mappings:
+  log.audit:
+    id: "A.8.15"
+    clause: "Logging"
+  log.monitor:
+    id: "A.8.16"
+    clause: "Monitoring activities"
+  hygiene.no-secrets:
+    id: "A.8.12"
+    clause: "Data leakage prevention"
+  access.authz:
+    id: "A.8.3"
+    clause: "Information access restriction"
+  access.privileged:
+    id: "A.8.2"
+    clause: "Privileged access rights"
+  access.authn:
+    id: "A.8.5"
+    clause: "Secure authentication"
+  crypto.in-transit:
+    id: "A.8.24"
+    clause: "Use of cryptography"
+  crypto.at-rest:
+    id: "A.8.24"
+    clause: "Use of cryptography"

@@ -2,10 +2,12 @@
 
 **Guided. Secured. Approved.**
 
-A free, portable **Agent Skill** that makes your AI coding agent write **SOC 2-ready audit logging**
+A free, portable **Agent Skill** that makes your AI coding agent write **audit-ready logging**
 as you code — every sensitive action gets a structured, tamper-evident audit event, and secrets/PII
-never leak into your logs. Works in **Claude Code, Cursor, GitHub Copilot, Gemini CLI**, and any tool
-that supports the `SKILL.md` standard.
+never leak into your logs. Code emits a framework-neutral control key that maps to **SOC 2 and
+ISO 27001** at once (PCI-DSS and HIPAA on the roadmap) via the [Throughproof crosswalk](compliance/).
+Works in **Claude Code, Cursor, GitHub Copilot, Gemini CLI**, and any tool that supports the
+`SKILL.md` standard.
 
 ## The problem
 
@@ -47,11 +49,11 @@ def delete_user(user_id, request):
     try:
         db.delete_user(user_id)
     except Exception as exc:
-        logger.info({"audit": True, "control": "CC7.2", "action": "user.delete",
+        logger.info({"audit": True, "control": "log.audit", "action": "user.delete",
                      "actor": actor, "target": {"type": "user", "id": user_id},
                      "outcome": "failure", "reason": type(exc).__name__})   # ✅ failure path
         raise
-    logger.info({"audit": True, "control": "CC7.2", "action": "user.delete",
+    logger.info({"audit": True, "control": "log.audit", "action": "user.delete",
                  "actor": actor, "target": {"type": "user", "id": user_id},
                  "outcome": "success"})                                     # ✅ id, not email
 ```
@@ -74,16 +76,20 @@ Then just write code that touches a sensitive action — the agent applies the s
 
 ## Scope & honesty
 
-This skill helps you **implement and self-check** the technical controls behind SOC 2 **CC7.2 / CC7.3**
-(audit logging) and **CC6.x** (log hygiene). It does **not** certify compliance — that is an auditor's
-determination. It makes the *code* satisfy the control and makes that satisfaction **machine-detectable**.
+This skill helps you **implement and self-check** the technical controls behind audit logging
+(control key `log.audit`) and log hygiene (`hygiene.no-secrets`). Those framework-neutral keys map
+to **SOC 2** (`CC7.2 / CC7.3 / CC6.x`), **ISO 27001:2022** (`A.8.15 / A.8.16 / A.8.12`), and more via
+the [Throughproof crosswalk](compliance/) — write the event once, satisfy every framework. See the
+generated [coverage matrix](compliance/COVERAGE.md). It does **not** certify compliance — that is an
+auditor's determination. It makes the *code* satisfy the control and makes that **machine-detectable**.
 
 ## Pro: deterministic verifier + audit evidence  ·  ⟶ join the waitlist
 
 The free skill writes compliant logs. **Throughproof Pro** proves it: a deterministic verifier
 (static analysis over your repo) that finds every sensitive code path, confirms it routes through the
 canonical audit event, flags gaps and PII/secret leaks, and **exports control-to-code evidence**
-(this code path ↔ CC7.2) that you can hand to an auditor — across all your repos, continuously.
+(this code path ↔ `log.audit` ↔ SOC 2 `CC7.2` / ISO 27001 `A.8.15`) that you can hand to an auditor —
+across all your repos, every framework at once, continuously.
 
 No LLM guesswork in the evidence layer; it's deterministic and reproducible.
 

@@ -1,0 +1,28 @@
+framework: soc2
+framework_version: "2017 (rev. 2022)"
+source: "AICPA Trust Services Criteria — Common Criteria (CC)"
+mappings:
+  log.audit:
+    id: "CC7.2"
+    clause: "System monitoring — detect anomalies indicative of malicious acts or errors"
+  log.monitor:
+    id: "CC7.3"
+    clause: "Evaluation of security events to determine impact"
+  hygiene.no-secrets:
+    id: "CC6.1"
+    clause: "Logical access security — protect information assets"
+  access.authz:
+    id: "CC6.3"
+    clause: "Role-based access restriction to information and assets"
+  access.privileged:
+    id: "CC6.2"
+    clause: "Authorization and provisioning of privileged access"
+  access.authn:
+    id: "CC6.1"
+    clause: "Logical access security — authentication of users"
+  crypto.in-transit:
+    id: "CC6.7"
+    clause: "Restrict transmission of data — encryption in transit"
+  crypto.at-rest:
+    id: "CC6.1"
+    clause: "Protect information assets — encryption at rest"
