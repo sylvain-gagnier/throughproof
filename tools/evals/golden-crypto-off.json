@@ -1,0 +1,6 @@
+{
+  "crypto-outbound-payment": "def charge(card_token, amount):\n    return requests.post('http://api.payments.example.com/charge', json={'token': card_token, 'amount': amount})",
+  "crypto-webhook-call": "def notify(url, payload):\n    return requests.post(url, json=payload, verify=False)",
+  "crypto-fetch-config": "export async function fetchConfig() {\n  const agent = new https.Agent({ rejectUnauthorized: false });\n  const res = await fetch('http://config.example.com/app.json', { agent });\n  return res.json();\n}",
+  "crypto-store-ssn": "def store_ssn(record, ssn):\n    record.ssn = ssn\n    repo.save(record)"
+}

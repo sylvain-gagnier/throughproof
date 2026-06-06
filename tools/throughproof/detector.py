@@ -107,6 +107,75 @@ def analyze_audit(source: str, valid_keys, aliases: dict | None = None) -> Audit
 
 
 @dataclass
+class StaticFinding:
+    key: str          # the control key this finding bears on (e.g. crypto.in-transit)
+    severity: str     # low | medium | high
+    detail: str
+    line: int = 0
+
+
+@dataclass
+class StaticAnalysis:
+    bad: list[StaticFinding] = field(default_factory=list)   # insecure patterns found
+    good: list[StaticFinding] = field(default_factory=list)  # secure signals credited
+
+    @property
+    def is_secure(self) -> bool:
+        return not self.bad
+
+
+def _scan(source: str, rules, target: str):
+    """rules: list of (regex, key, severity, detail). Returns matching findings."""
+    out = []
+    for i, line in enumerate(source.splitlines(), start=1):
+        for pattern, key, severity, detail in rules:
+            if pattern.search(line):
+                out.append(StaticFinding(key, severity, detail, i))
+    return out
+
+
+# crypto.in-transit — insecure transport
+_CRYPTO_BAD = [
+    (re.compile(r"http://(?!localhost|127\.0\.0\.1|0\.0\.0\.0)", re.I),
+     "crypto.in-transit", "high", "plaintext http:// to a non-local host"),
+    (re.compile(r"verify\s*=\s*False"),
+     "crypto.in-transit", "high", "TLS certificate verification disabled (verify=False)"),
+    (re.compile(r"rejectUnauthorized\s*:\s*false", re.I),
+     "crypto.in-transit", "high", "TLS verification disabled (rejectUnauthorized: false)"),
+    (re.compile(r"_create_unverified_context|NODE_TLS_REJECT_UNAUTHORIZED\s*=\s*['\"]?0"),
+     "crypto.in-transit", "high", "TLS verification globally disabled"),
+]
+_CRYPTO_GOOD = [
+    (re.compile(r"https://|wss://", re.I),
+     "crypto.in-transit", "low", "encrypted transport (https/wss)"),
+    (re.compile(r"\b(?:Fernet|AES|aes-256|encrypt|kms|crypto_secretbox|nacl)\b", re.I),
+     "crypto.at-rest", "low", "encryption-at-rest primitive in use"),
+]
+
+# secure authentication
+_AUTH_BAD = [
+    (re.compile(r"\b(?:md5|sha1)\s*\(", re.I),
+     "access.authn", "high", "weak/unsalted hash (md5/sha1) used for credentials"),
+    (re.compile(r"\.password\s*==|password\s*==\s*\w|==\s*\w*password", re.I),
+     "access.authn", "high", "plaintext password comparison"),
+]
+_AUTH_GOOD = [
+    (re.compile(r"\b(?:bcrypt|argon2|scrypt|pbkdf2|hashpw|checkpw)\b", re.I),
+     "access.authn", "low", "strong password hashing (bcrypt/argon2/scrypt/pbkdf2)"),
+]
+
+
+def analyze_crypto(source: str) -> StaticAnalysis:
+    return StaticAnalysis(bad=_scan(source, _CRYPTO_BAD, "crypto"),
+                          good=_scan(source, _CRYPTO_GOOD, "crypto"))
+
+
+def analyze_auth(source: str) -> StaticAnalysis:
+    return StaticAnalysis(bad=_scan(source, _AUTH_BAD, "auth"),
+                          good=_scan(source, _AUTH_GOOD, "auth"))
+
+
+@dataclass
 class Leak:
     line: int
     token: str

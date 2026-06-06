@@ -6,6 +6,13 @@
 #   runtime_marker  - the agent emits `control: "<key>"` in a structured event at runtime
 #   static          - a code property the verifier detects statically (e.g. TLS enforced)
 #   static_negative - an absence the verifier checks for (e.g. no secret in a log line)
+#
+# Richer model (per key):
+#   severity         - importance of the control (low | medium | high)
+#   auditor_question - the question this control answers for an auditor
+#   required_fields  - (runtime markers) fields the event MUST carry
+#   retention        - (runtime markers) expected minimum log retention
+#   verify           - (static controls) what the deterministic verifier checks
 version: 1
 
 keys:
@@ -13,41 +20,69 @@ keys:
     domain: logging
     evidence_type: runtime_marker
     description: Canonical audit event emitted on a sensitive action, on success and failure.
+    severity: high
+    auditor_question: "Can you show every sensitive action, who did it, and its outcome?"
+    required_fields: [audit, control, action, actor, target, outcome, ts, correlation_id]
+    retention: ">= 1 year"
 
   - key: log.monitor
     domain: logging
     evidence_type: runtime_marker
     description: Security-relevant monitoring/alerting event that feeds anomaly detection.
+    severity: medium
+    auditor_question: "How are security-relevant events detected and surfaced for review?"
+    required_fields: [audit, control, action, outcome, ts]
+    retention: ">= 1 year"
 
   - key: hygiene.no-secrets
     domain: logging
     evidence_type: static_negative
     description: Logs must never contain secrets, tokens, credentials, or PII values.
+    severity: high
+    auditor_question: "How do you ensure secrets and PII never land in your logs?"
+    verify: "No secret/PII value (password, token, api_key, email, raw body) interpolated into a log call."
 
   - key: access.authz
     domain: access
     evidence_type: runtime_marker
     description: Authorization decision (allow/deny) on access to a restricted resource.
+    severity: high
+    auditor_question: "How are authorization decisions enforced and recorded, including denials?"
+    required_fields: [audit, control, action, actor, target, outcome, ts, correlation_id]
+    retention: ">= 1 year"
 
   - key: access.privileged
     domain: access
     evidence_type: runtime_marker
     description: Exercise of a privileged or administrative capability.
+    severity: high
+    auditor_question: "Who can perform privileged operations, and where is each one recorded?"
+    required_fields: [audit, control, action, actor, target, outcome, ts, correlation_id]
+    retention: ">= 1 year"
 
   - key: access.authn
     domain: access
     evidence_type: static
     description: Secure authentication — hashed credentials, MFA, safe session handling.
+    severity: high
+    auditor_question: "How are credentials stored and verified, and are sessions handled safely?"
+    verify: "Passwords hashed with bcrypt/argon2/scrypt/pbkdf2; no md5/sha1 or plaintext password compare."
 
   - key: crypto.in-transit
     domain: crypto
     evidence_type: static
     description: Sensitive data is encrypted in transit (TLS enforced, no plaintext channels).
+    severity: high
+    auditor_question: "Is data encrypted in transit, with certificate verification enforced?"
+    verify: "No plaintext http:// to remote hosts; TLS verification never disabled (verify=False / rejectUnauthorized:false)."
 
   - key: crypto.at-rest
     domain: crypto
     evidence_type: static
     description: Sensitive data is encrypted at rest.
+    severity: high
+    auditor_question: "Is sensitive data encrypted at rest, with keys managed in a KMS/secrets manager?"
+    verify: "Sensitive fields/blobs encrypted with a vetted primitive (Fernet/AES/NaCl/KMS); keys not hard-coded."
 
 # Legacy literals previously emitted by SOC 2-only adopters. The verifier treats
 # these as aliases of the neutral keys so already-shipped events still map.

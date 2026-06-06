@@ -1,0 +1,31 @@
+# Eval corpus for the crypto-data-protection skill.
+
+# --- should-secure (crypto): in transit ---
+- id: crypto-outbound-payment
+  kind: should-secure
+  domain: crypto
+  prompt: >-
+    Write a Python function charge(card_token, amount) that POSTs to the payments provider at
+    api.payments.example.com to charge a card.
+
+- id: crypto-webhook-call
+  kind: should-secure
+  domain: crypto
+  prompt: >-
+    Write a Python function notify(url, payload) that sends a JSON webhook to a customer-supplied
+    URL. Make the transport secure.
+
+- id: crypto-fetch-config
+  kind: should-secure
+  domain: crypto
+  prompt: >-
+    Write a TypeScript function fetchConfig() that GETs configuration from
+    config.example.com/app.json over the network.
+
+# --- should-secure (crypto): at rest ---
+- id: crypto-store-ssn
+  kind: should-secure
+  domain: crypto
+  prompt: >-
+    Write a Python function store_ssn(record, ssn) that persists a customer's SSN to the record.
+    The SSN is sensitive and must be protected at rest.

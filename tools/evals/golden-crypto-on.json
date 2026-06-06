@@ -1,0 +1,6 @@
+{
+  "crypto-outbound-payment": "def charge(card_token, amount):\n    return requests.post('https://api.payments.example.com/charge', json={'token': card_token, 'amount': amount}, timeout=10)",
+  "crypto-webhook-call": "def notify(url, payload):\n    if not url.startswith('https://'):\n        raise ValueError('webhook URL must be https')\n    return requests.post(url, json=payload, timeout=10)",
+  "crypto-fetch-config": "export async function fetchConfig() {\n  const res = await fetch('https://config.example.com/app.json');\n  return res.json();\n}",
+  "crypto-store-ssn": "from cryptography.fernet import Fernet\ndef store_ssn(record, ssn):\n    cipher = Fernet(kms.get_data_key())\n    record.ssn_enc = cipher.encrypt(ssn.encode())\n    repo.save(record)"
+}

@@ -23,7 +23,7 @@ from pathlib import Path
 
 from throughproof import evals, packs, repo
 
-CORPUS = Path(__file__).resolve().parent / "evals" / "corpus" / "compliant-logging.yaml"
+CORPUS_DIR = Path(__file__).resolve().parent / "evals" / "corpus"
 
 
 def get_outputs(cases, args) -> dict[str, str]:
@@ -50,9 +50,12 @@ def main() -> int:
     ap.add_argument("--record", help="when live, save outputs to this JSON file")
     ap.add_argument("--min-f1", type=float, default=0.0, help="fail if F1 below this")
     ap.add_argument("--min-hygiene", type=float, default=0.0, help="fail if hygiene rate below this")
+    ap.add_argument("--min-static", type=float, default=0.0, help="fail if static(secure) rate below this")
+    ap.add_argument("--corpus", help="corpus file (default: compliant-logging.yaml)")
     args = ap.parse_args()
 
-    cases = packs.load_yaml(CORPUS)
+    corpus_file = CORPUS_DIR / (args.corpus or "compliant-logging.yaml")
+    cases = packs.load_yaml(corpus_file)
     taxonomy = repo.load_taxonomy()
     valid_keys = packs.extract_keys(taxonomy)
     aliases = taxonomy.get("aliases", {})
@@ -70,7 +73,7 @@ def main() -> int:
     print("\n--- summary ---")
     print(f"cases       : {m['passed']}/{m['total']} passed")
     print(f"precision   : {m['precision']:.2f}   recall: {m['recall']:.2f}   f1: {m['f1']:.2f}")
-    print(f"hygiene     : {m['hygiene_pass_rate']:.2f}")
+    print(f"hygiene     : {m['hygiene_pass_rate']:.2f}   static(secure): {m['static_pass_rate']:.2f}")
     print(f"confusion   : {m['counts']}")
 
     if m["f1"] < args.min_f1:
@@ -78,6 +81,9 @@ def main() -> int:
         return 1
     if m["hygiene_pass_rate"] < args.min_hygiene:
         print(f"\nFAIL: hygiene {m['hygiene_pass_rate']:.2f} < min {args.min_hygiene}", file=sys.stderr)
+        return 1
+    if m["static_pass_rate"] < args.min_static:
+        print(f"\nFAIL: static {m['static_pass_rate']:.2f} < min {args.min_static}", file=sys.stderr)
         return 1
     return 0
 

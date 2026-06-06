@@ -62,14 +62,22 @@ It does nothing on ordinary, non-sensitive code — no log spam.
 
 ## Install
 
+Three composable, framework-neutral skills — install the domains you care about:
+
+| Skill | Covers | Control keys |
+|---|---|---|
+| [`compliant-logging`](skills/compliant-logging/SKILL.md) | audit logging + log hygiene | `log.audit`, `hygiene.no-secrets` |
+| [`secure-access-control`](skills/secure-access-control/SKILL.md) | authorization, privileged ops, authentication | `access.authz`, `access.privileged`, `access.authn` |
+| [`crypto-data-protection`](skills/crypto-data-protection/SKILL.md) | encryption in transit + at rest | `crypto.in-transit`, `crypto.at-rest` |
+
 The `SKILL.md` format is portable; only the install location differs per tool.
 
-- **Claude Code** — copy the skill folder into your skills dir:
+- **Claude Code** — copy the skill folder(s) into your skills dir:
   ```bash
   cp -r skills/compliant-logging ~/.claude/skills/        # user-wide
   # or, per-project:  cp -r skills/compliant-logging .claude/skills/
   ```
-- **Cursor / Copilot / Gemini CLI** — place `compliant-logging/` in that tool's skills directory
+- **Cursor / Copilot / Gemini CLI** — place the skill folder(s) in that tool's skills directory
   (commonly `.agents/skills/`); the skill body is identical across tools.
 
 Then just write code that touches a sensitive action — the agent applies the skill automatically.

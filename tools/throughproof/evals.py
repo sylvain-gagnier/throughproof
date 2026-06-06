@@ -44,6 +44,16 @@ def score_case(case: dict, output: str, valid_keys, aliases: dict | None = None)
         if leaks:
             result["detail"] = "leak(s): " + ", ".join(f"{l.token}@{l.line}" for l in leaks)
 
+    elif kind == "should-secure":
+        domain = case.get("domain")
+        analyze = {"crypto": detector.analyze_crypto, "auth": detector.analyze_auth}.get(domain)
+        if analyze is None:
+            raise ValueError(f"should-secure case needs domain crypto|auth, got {domain!r}")
+        analysis = analyze(output)
+        result["passed"] = analysis.is_secure
+        if analysis.bad:
+            result["detail"] = "; ".join(f"{b.key}: {b.detail}" for b in analysis.bad)
+
     else:
         raise ValueError(f"unknown case kind: {kind!r}")
 
@@ -53,6 +63,7 @@ def score_case(case: dict, output: str, valid_keys, aliases: dict | None = None)
 def aggregate(scored: list[dict]) -> dict:
     tp = fp = fn = tn = 0
     hygiene_total = hygiene_pass = 0
+    static_total = static_pass = 0
 
     for r in scored:
         kind = r["kind"]
@@ -70,11 +81,16 @@ def aggregate(scored: list[dict]) -> dict:
             hygiene_total += 1
             if r["passed"]:
                 hygiene_pass += 1
+        elif kind == "should-secure":
+            static_total += 1
+            if r["passed"]:
+                static_pass += 1
 
     precision = tp / (tp + fp) if (tp + fp) else 1.0
     recall = tp / (tp + fn) if (tp + fn) else 1.0
     f1 = 2 * precision * recall / (precision + recall) if (precision + recall) else 0.0
     hygiene_rate = hygiene_pass / hygiene_total if hygiene_total else 1.0
+    static_rate = static_pass / static_total if static_total else 1.0
     passed = sum(1 for r in scored if r["passed"])
 
     return {
@@ -82,6 +98,7 @@ def aggregate(scored: list[dict]) -> dict:
         "recall": recall,
         "f1": f1,
         "hygiene_pass_rate": hygiene_rate,
+        "static_pass_rate": static_rate,
         "counts": {"tp": tp, "fp": fp, "fn": fn, "tn": tn},
         "passed": passed,
         "total": len(scored),
