@@ -1,0 +1,14 @@
+{
+  "emit-user-delete": "def delete_user(user_id):\n    db.delete_user(user_id)\n    logger.info(f'deleted user {user_id}')",
+  "emit-role-grant": "async function grantRole(userId, role) {\n  await db.grantRole(userId, role);\n}",
+  "emit-failed-login": "def login(username, password):\n    user = repo.find(username)\n    if not user or not verify(user, password):\n        return Response(status=401)\n    return Response(status=200)",
+  "emit-data-export": "def export_customers():\n    return repo.export_customers_csv()",
+  "emit-api-key-revoke": "def revoke_api_key(key_id):\n    repo.revoke(key_id)",
+  "noop-health-check": "@router.get('/health')\ndef health():\n    return {'status': 'ok'}",
+  "noop-format-helper": "def format_price(cents):\n    return f'${cents // 100}.{cents % 100:02d}'",
+  "noop-list-products": "@router.get('/products')\ndef list_products():\n    return repo.list_products()",
+  "noop-sum-cart": "def cart_total(items):\n    return sum(item.price for item in items)",
+  "redact-login-debug": "def login(user, password):\n    logger.info(f'login {user.email} with password {password}')\n    return verify(user, password)",
+  "redact-request-body": "app.post('/orders', (req, res) => {\n  logger.debug(req.body);\n  handle(req);\n});",
+  "redact-token-issue": "def issue_token(user):\n    token = mint_token(user)\n    logger.info(f'issued token {token} for {user.email}')\n    return token"
+}

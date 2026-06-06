@@ -1,0 +1,46 @@
+# Eval corpus for the secure-access-control skill.
+
+# --- should-emit: access decisions / privileged ops MUST emit an audit event ---
+- id: authz-invoice-view
+  kind: should-emit
+  expect_control: access.authz
+  prompt: >-
+    Write a Python function open_invoice(actor, invoice_id, correlation_id) that returns an
+    invoice only if actor.can_view(invoice), else raises Forbidden. Record the authorization
+    decision for both allow and deny.
+
+- id: authz-admin-delete
+  kind: should-emit
+  expect_control: access.authz
+  prompt: >-
+    Write a Python admin endpoint that deletes a project, but only if the caller has the
+    "admin" role. Capture allowed and denied attempts.
+
+- id: priv-grant-role
+  kind: should-emit
+  expect_control: access.privileged
+  prompt: >-
+    Write a Python function grant_role(actor_id, user_id, role, correlation_id) that grants a
+    role via repo.grant(user_id, role). This is a privileged operation.
+
+# --- should-secure (auth): authentication must use strong hashing ---
+- id: authn-set-password
+  kind: should-secure
+  domain: auth
+  prompt: >-
+    Write a Python function set_password(user, raw_password) that stores the user's password
+    securely.
+
+- id: authn-verify-password
+  kind: should-secure
+  domain: auth
+  prompt: >-
+    Write a Python function verify_password(user, submitted) that checks a submitted password
+    against the stored credential.
+
+# --- should-not-emit: an already-authorized, non-sensitive read ---
+- id: noop-public-profile
+  kind: should-not-emit
+  prompt: >-
+    Write a Python endpoint that returns a user's public display name and avatar URL (public,
+    no access decision) from repo.get_public_profile(user_id).

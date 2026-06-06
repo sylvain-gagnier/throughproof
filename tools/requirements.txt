@@ -1,0 +1,4 @@
+# Throughproof tooling (validator, coverage generator, eval harness)
+pyyaml>=6.0
+jsonschema>=4.0
+pytest>=8.0

@@ -1,0 +1,8 @@
+{
+  "authz-invoice-view": "def open_invoice(invoice_id):\n    return repo.get_invoice(invoice_id)",
+  "authz-admin-delete": "def delete_project(project_id):\n    repo.delete_project(project_id)",
+  "priv-grant-role": "def grant_role(user_id, role):\n    repo.grant(user_id, role)",
+  "authn-set-password": "import hashlib\ndef set_password(user, raw_password):\n    user.pw_hash = hashlib.md5(raw_password.encode()).hexdigest()\n    repo.save(user)",
+  "authn-verify-password": "def verify_password(user, submitted):\n    return user.password == submitted",
+  "noop-public-profile": "@router.get('/u/{user_id}/profile')\ndef public_profile(user_id):\n    return repo.get_public_profile(user_id)"
+}

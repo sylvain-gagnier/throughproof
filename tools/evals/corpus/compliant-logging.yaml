@@ -1,0 +1,80 @@
+# Eval corpus for the compliant-logging skill.
+# Each case is a prompt handed to an agent (with the skill active). The agent's
+# output is scored deterministically by the detector. See tools/run_evals.py.
+
+# --- should-emit: sensitive actions that MUST produce a valid audit event ---
+- id: emit-user-delete
+  kind: should-emit
+  expect_control: log.audit
+  prompt: >-
+    Write a Python function delete_user(actor_id, user_id, correlation_id) that
+    deletes a user record via repo.delete_user(user_id).
+
+- id: emit-role-grant
+  kind: should-emit
+  expect_control: log.audit
+  prompt: >-
+    Write a TypeScript async function grantRole(actorId, userId, role, correlationId)
+    that calls db.grantRole(userId, role).
+
+- id: emit-failed-login
+  kind: should-emit
+  expect_control: log.audit
+  prompt: >-
+    Write a Python login handler that, on an invalid password, returns 401. Make sure
+    the denied-access path is captured for security monitoring.
+
+- id: emit-data-export
+  kind: should-emit
+  expect_control: log.audit
+  prompt: >-
+    Write a Python function export_customers(actor_id, correlation_id) that bulk-exports
+    all customer records to a CSV download.
+
+- id: emit-api-key-revoke
+  kind: should-emit
+  expect_control: log.audit
+  prompt: >-
+    Write a Python function revoke_api_key(actor_id, key_id, correlation_id) that revokes
+    an API key via repo.revoke(key_id).
+
+# --- should-not-emit: ordinary code that must NOT be over-logged ---
+- id: noop-health-check
+  kind: should-not-emit
+  prompt: >-
+    Write a Python health-check endpoint that returns {"status": "ok"}.
+
+- id: noop-format-helper
+  kind: should-not-emit
+  prompt: >-
+    Write a Python helper format_price(cents) that returns a "$x.xx" string.
+
+- id: noop-list-products
+  kind: should-not-emit
+  prompt: >-
+    Write a Python endpoint that returns the public catalog of products (non-sensitive,
+    no auth) from repo.list_products().
+
+- id: noop-sum-cart
+  kind: should-not-emit
+  prompt: >-
+    Write a Python function cart_total(items) that sums item prices and returns the total.
+
+# --- should-redact: code that logs and must keep secrets/PII out ---
+- id: redact-login-debug
+  kind: should-redact
+  prompt: >-
+    Add a debug log line to a Python login function for the variables `user` (has .email)
+    and `password`, to help trace login issues.
+
+- id: redact-request-body
+  kind: should-redact
+  prompt: >-
+    Add logging to a TypeScript Express handler so we can debug failures. The request is
+    in `req` with `req.body` containing the payload.
+
+- id: redact-token-issue
+  kind: should-redact
+  prompt: >-
+    Add a log line to a Python function that issues an auth `token` for a `user`, recording
+    that a token was issued.

@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Throughproof framework pack",
+  "type": "object",
+  "required": ["framework", "framework_version", "source", "mappings"],
+  "additionalProperties": false,
+  "properties": {
+    "framework": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "Stable framework id, e.g. soc2, iso27001, pci-dss-v4"
+    },
+    "framework_version": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Provenance: the framework revision these mappings come from"
+    },
+    "source": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Provenance: the authoritative document the mappings are drawn from"
+    },
+    "mappings": {
+      "type": "object",
+      "minProperties": 1,
+      "description": "One entry per Throughproof control key the pack covers",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["id", "clause"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "clause": { "type": "string", "minLength": 1 }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["na", "reason"],
+            "additionalProperties": false,
+            "properties": {
+              "na": { "const": true },
+              "reason": { "type": "string", "minLength": 3 }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
