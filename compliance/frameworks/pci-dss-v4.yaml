@@ -1,0 +1,28 @@
+framework: pci-dss-v4
+framework_version: "4.0"
+source: "PCI DSS v4.0 — Requirements and Testing Procedures"
+mappings:
+  log.audit:
+    id: "Req 10.2"
+    clause: "Audit logs capture all access to system components and cardholder data"
+  log.monitor:
+    id: "Req 10.4"
+    clause: "Audit logs are reviewed to identify anomalies or suspicious activity"
+  hygiene.no-secrets:
+    id: "Req 3.4"
+    clause: "PAN is masked / rendered unreadable; sensitive auth data is not retained in logs"
+  access.authz:
+    id: "Req 7.2"
+    clause: "Access to system components and data is restricted by need-to-know"
+  access.privileged:
+    id: "Req 7.2.5"
+    clause: "Privileged access is assigned and managed by least privilege"
+  access.authn:
+    id: "Req 8.3"
+    clause: "Strong authentication; passwords/passphrases protected with strong cryptography"
+  crypto.in-transit:
+    id: "Req 4.2"
+    clause: "Strong cryptography protects PAN during transmission over open networks"
+  crypto.at-rest:
+    id: "Req 3.5"
+    clause: "PAN is rendered unreadable (encrypted) wherever it is stored"

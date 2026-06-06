@@ -1,0 +1,28 @@
+framework: hipaa
+framework_version: "2013 (Omnibus)"
+source: "HIPAA Security Rule — 45 CFR Part 164, Subpart C"
+mappings:
+  log.audit:
+    id: "164.312(b)"
+    clause: "Audit controls — record and examine activity in systems with ePHI"
+  log.monitor:
+    id: "164.308(a)(1)(ii)(D)"
+    clause: "Information system activity review"
+  hygiene.no-secrets:
+    id: "164.502(b)"
+    clause: "Minimum necessary — limit PHI in use/disclosure (and incidental exposure in logs)"
+  access.authz:
+    id: "164.312(a)(1)"
+    clause: "Access control — allow access only to authorized persons/software"
+  access.privileged:
+    id: "164.308(a)(4)"
+    clause: "Information access management — authorization for access to ePHI"
+  access.authn:
+    id: "164.312(d)"
+    clause: "Person or entity authentication"
+  crypto.in-transit:
+    id: "164.312(e)(1)"
+    clause: "Transmission security — guard against unauthorized access to ePHI in transit"
+  crypto.at-rest:
+    id: "164.312(a)(2)(iv)"
+    clause: "Encryption and decryption of ePHI at rest"

@@ -21,6 +21,8 @@ jobs:
         run: python tools/validate_packs.py
       - name: Coverage matrix is fresh
         run: python tools/gen_coverage.py --check
+      - name: Framework version-watch (packs not behind latest known)
+        run: python tools/check_versions.py
       - name: Eval gate — compliant-logging (golden replay)
         run: >-
           python tools/run_evals.py

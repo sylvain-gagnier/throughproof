@@ -19,7 +19,9 @@ pip install -r tools/requirements.txt
 | `python tools/gen_coverage.py` | Regenerate `compliance/COVERAGE.md` from the data. |
 | `python tools/gen_coverage.py --check` | CI guard: fail if `COVERAGE.md` is stale. |
 | `python tools/run_evals.py --replay <file.json>` | Score recorded agent outputs (deterministic). |
-| `python tools/run_evals.py --responder '<cmd>' --record out.json` | Run the corpus live against an agent (prompt on stdin, output on stdout), e.g. `--responder 'ollama run qwen2.5-coder'` or `--responder 'claude -p'`. |
+| `python tools/run_evals.py --corpus <name>.yaml --responder '<cmd>' --record out.json` | Run a corpus live against an agent (prompt on stdin, output on stdout), e.g. `--responder 'ollama run qwen2.5-coder'` or `--responder 'claude -p'`. |
+| `python tools/check_versions.py` | Version-watch: flag any pack pinned behind `compliance/framework-latest.yaml`. Schedule it. |
+| `python tools/explain.py <control-key>` | Show how many frameworks one control path satisfies (the multiplier). |
 
 ## Layout
 

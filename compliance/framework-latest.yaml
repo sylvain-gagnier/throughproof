@@ -1,0 +1,8 @@
+# Latest-known version per framework, maintained by hand (or a future web check).
+# tools/check_versions.py compares each pack's framework_version against this and
+# flags drift. When a framework ships a new revision, bump it here — the version-watch
+# job will then flag the pack as behind until the pack is reviewed/updated.
+soc2: "2017 (rev. 2022)"
+iso27001: "2022"
+pci-dss-v4: "4.0"
+hipaa: "2013 (Omnibus)"

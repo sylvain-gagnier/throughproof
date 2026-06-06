@@ -2,15 +2,17 @@
 
 # Throughproof framework coverage
 
-| Control key | iso27001 | soc2 |
-|---|---|---|
-| `log.audit` | A.8.15 | CC7.2 |
-| `log.monitor` | A.8.16 | CC7.3 |
-| `hygiene.no-secrets` | A.8.12 | CC6.1 |
-| `access.authz` | A.8.3 | CC6.3 |
-| `access.privileged` | A.8.2 | CC6.2 |
-| `access.authn` | A.8.5 | CC6.1 |
-| `crypto.in-transit` | A.8.24 | CC6.7 |
-| `crypto.at-rest` | A.8.24 | CC6.1 |
+| Control key | hipaa | iso27001 | pci-dss-v4 | soc2 | Frameworks |
+|---|---|---|---|---|---|
+| `log.audit` | 164.312(b) | A.8.15 | Req 10.2 | CC7.2 | **4** |
+| `log.monitor` | 164.308(a)(1)(ii)(D) | A.8.16 | Req 10.4 | CC7.3 | **4** |
+| `hygiene.no-secrets` | 164.502(b) | A.8.12 | Req 3.4 | CC6.1 | **4** |
+| `access.authz` | 164.312(a)(1) | A.8.3 | Req 7.2 | CC6.3 | **4** |
+| `access.privileged` | 164.308(a)(4) | A.8.2 | Req 7.2.5 | CC6.2 | **4** |
+| `access.authn` | 164.312(d) | A.8.5 | Req 8.3 | CC6.1 | **4** |
+| `crypto.in-transit` | 164.312(e)(1) | A.8.24 | Req 4.2 | CC6.7 | **4** |
+| `crypto.at-rest` | 164.312(a)(2)(iv) | A.8.24 | Req 3.5 | CC6.1 | **4** |
 
-**16 control mappings** across **2 frameworks** x **8 control keys**.
+> **Write once, satisfy many.** A single `log.audit` control path satisfies **4 frameworks** at once.
+
+**32 control mappings** across **4 frameworks** x **8 control keys**.
