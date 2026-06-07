@@ -117,6 +117,10 @@ continuously.
 
 No LLM guesswork in the evidence layer; it's deterministic and reproducible.
 
+**Coming soon — agent-native:** call the Pro verifier straight from your AI coding agent
+(**Claude Code, Cursor, Antigravity, Gemini**) via **MCP**, to find and fix compliance gaps without
+leaving your editor.
+
 **→ Want it? Join the waitlist: https://throughproof.com**
 
 ## License
