@@ -11,7 +11,7 @@ right, with secrets and PII kept out of your logs. Each control path emits a **f
 control key** that maps across **4 frameworks × 8 control keys = 32 mappings** via the
 [Throughproof crosswalk](compliance/) ([coverage matrix](compliance/COVERAGE.md)). No framework
 lock-in: write the event once, satisfy every auditor. Works in **Claude Code, Cursor, GitHub
-Copilot, Gemini CLI**, and any tool that supports the `SKILL.md` standard.
+Copilot, Gemini CLI, and Google Antigravity**, and any tool that supports the `SKILL.md` standard.
 
 ## The problem
 
@@ -90,8 +90,9 @@ The `SKILL.md` format is portable; only the install location differs per tool.
   cp -r skills/compliant-logging ~/.claude/skills/        # user-wide
   # or, per-project:  cp -r skills/compliant-logging .claude/skills/
   ```
-- **Cursor / Copilot / Gemini CLI** — place the skill folder(s) in that tool's skills directory
-  (commonly `.agents/skills/`); the skill body is identical across tools.
+- **Cursor / Copilot / Gemini CLI / Google Antigravity** — place the skill folder(s) in that tool's
+  skills directory (commonly `.agents/skills/`; Antigravity reads the `SKILL.md` standard natively);
+  the skill body is identical across tools.
 
 Then just write code that touches a sensitive action — the agent applies the skill automatically.
 
